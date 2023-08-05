@@ -1,9 +1,9 @@
 import { useState } from "react";
 import Select from "react-select";
+import Swal from "sweetalert2";
 
 function App() {
   const [sectors, setSectors] = useState([]);
-
 
   const handleChange = (value) => {
     setSectors(value);
@@ -14,9 +14,27 @@ function App() {
     const form = e.target;
     const sector = sectors.label;
     const name = form.name.value;
-    const agree = form.agree.value;
-    const data = { name, sector, agree };
-    setDatas(data);
+    const terms = form.agree.value;
+    const data = { name, sector, terms };
+
+    fetch("http://localhost:3000/userdata", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.insertedId) {
+          Swal.fire({
+            title: "Success!",
+            text: "Data Saved Successfully!",
+            icon: "success",
+            confirmButtonText: "Ok",
+          });
+        }
+      });
   };
 
   return (
