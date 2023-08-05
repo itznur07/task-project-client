@@ -3,12 +3,20 @@ import { FaEdit } from "react-icons/fa";
 import Select from "react-select";
 import Swal from "sweetalert2";
 
-function App() {
+const App = () => {
+  /** All States */
   const [sectors, setSectors] = useState([]);
   const [userData, setUserData] = useState([]);
+  const [sectorData, setSectorData] = useState([]);
 
-  console.log(userData);
+  /** Sector Data Fetching */
+  useEffect(() => {
+    fetch("http://localhost:3000/sectordata")
+      .then((res) => res.json())
+      .then((data) => setSectorData(data));
+  }, []);
 
+  /** User Etered Data Fetching */
   useEffect(() => {
     fetch("http://localhost:3000/userdata")
       .then((res) => res.json())
@@ -19,6 +27,7 @@ function App() {
     setSectors(value);
   };
 
+  /** Data Submit and Save Database */
   const handleSubmit = (e) => {
     e.preventDefault();
     const form = e.target;
@@ -62,14 +71,13 @@ function App() {
             required
           />
           <Select
-            options={[
-              { value: "1", label: "Manufacturing" },
-              { value: "2", label: "Service" },
-              { value: "3", label: "Other" },
-            ]}
+            options={sectorData.map(({ value, label }) => ({
+              value: value,
+              label: label,
+            }))}
             onChange={handleChange}
           />
-          <input type='checkbox' name='agree' className='my-2' />
+          <input type='checkbox' name='agree' required className='my-2' />
           <br />
           <button
             className='bg-blue-500 text-white p-2.5 px-5 rounded-sm cursor-pointer mt-5'
@@ -80,7 +88,7 @@ function App() {
         </form>
       </div>
 
-      <div className='max-w-7xl mx-auto mt-24'>
+      <div className='max-w-7xl mx-auto mt-24 mb-5'>
         <table className='min-w-full border border-gray-300'>
           <thead>
             <tr className='bg-blue-500 text-white font-bold text-lg'>
@@ -111,6 +119,6 @@ function App() {
       </div>
     </>
   );
-}
+};
 
 export default App;
