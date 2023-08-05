@@ -1,33 +1,36 @@
 import { useEffect, useState } from "react";
-import { FaEdit } from "react-icons/fa";
+import { FaEdit, FaTrash } from "react-icons/fa";
 import Select from "react-select";
 import Swal from "sweetalert2";
 
 const App = () => {
-  /** All States */
+  /** All States Here */
   const [sectors, setSectors] = useState([]);
   const [userData, setUserData] = useState([]);
   const [sectorData, setSectorData] = useState([]);
+  /** All States Ends Here */
 
-  /** Sector Data Fetching */
+  /** Sector Data Fetching Here */
   useEffect(() => {
     fetch("http://localhost:3000/sectordata")
       .then((res) => res.json())
       .then((data) => setSectorData(data));
   }, []);
+  /** Sector Data Fetching Ends Here */
 
-  /** User Etered Data Fetching */
+  /** User Etered Data Fetching Here */
   useEffect(() => {
     fetch("http://localhost:3000/userdata")
       .then((res) => res.json())
       .then((data) => setUserData(data));
   }, []);
+  /** User Etered Data Fetching Ends Here */
 
   const handleChange = (value) => {
     setSectors(value);
   };
 
-  /** Data Submit and Save Database */
+  /** Data Submit and Save Database Here */
   const handleSubmit = (e) => {
     e.preventDefault();
     const form = e.target;
@@ -57,9 +60,28 @@ const App = () => {
         }
       });
   };
+  /** Data Submit and Save Database Ends Here */
+
+  /** Data Deleted API Call Here */
+  const handleDeletedData = (id) => {
+    fetch(`http://localhost:3000/userdata/${id}`, {
+      method: "DELETE",
+      headers: {
+        "content-type": "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.deletedCount > 0) {
+          alert("Data Deleted");
+        }
+      });
+  };
+  /** Data Deleted API Call Ends Here */
 
   return (
     <>
+      {/* Form Here */}
       <div className='max-w-7xl mx-auto mt-24'>
         <form onSubmit={handleSubmit}>
           {" "}
@@ -87,7 +109,9 @@ const App = () => {
           </button>
         </form>
       </div>
+      {/* Form Ends Here */}
 
+      {/* Show Users Enterd Data Here */}
       <div className='max-w-7xl mx-auto mt-24 mb-5'>
         <table className='min-w-full border border-gray-300'>
           <thead>
@@ -106,10 +130,17 @@ const App = () => {
                 <td className='p-3'>{data.name}</td>
                 <td className='p-3'>{data.sector}</td>
                 <td className='p-3'>{data.terms}</td>
-                <td className='flex justify-center p-3'>
-                  <button>
+                <td className='flex justify-center p-3 space-x-4 text-[#201f1f] '>
+                  <button className='hover:text-blue-500'>
                     {" "}
                     <FaEdit size={20} />
+                  </button>
+                  <button
+                    onClick={() => handleDeletedData(data._id)}
+                    className='hover:text-red-500'
+                  >
+                    {" "}
+                    <FaTrash size={20} />
                   </button>
                 </td>
               </tr>
@@ -117,6 +148,7 @@ const App = () => {
           </tbody>
         </table>
       </div>
+      {/* Show Users Enterd Data Ends Here */}
     </>
   );
 };
