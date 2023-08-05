@@ -1,9 +1,19 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { FaEdit } from "react-icons/fa";
 import Select from "react-select";
 import Swal from "sweetalert2";
 
 function App() {
   const [sectors, setSectors] = useState([]);
+  const [userData, setUserData] = useState([]);
+
+  console.log(userData);
+
+  useEffect(() => {
+    fetch("http://localhost:3000/userdata")
+      .then((res) => res.json())
+      .then((data) => setUserData(data));
+  }, []);
 
   const handleChange = (value) => {
     setSectors(value);
@@ -31,8 +41,10 @@ function App() {
             title: "Success!",
             text: "Data Saved Successfully!",
             icon: "success",
+            timer: 2000,
             confirmButtonText: "Ok",
           });
+          form.reset();
         }
       });
   };
@@ -47,6 +59,7 @@ function App() {
             name='name'
             placeholder='Enter Name'
             className='border p-3 w-full my-5 border-slate-500 rounded-md'
+            required
           />
           <Select
             options={[
@@ -58,11 +71,12 @@ function App() {
           />
           <input type='checkbox' name='agree' className='my-2' />
           <br />
-          <input
+          <button
             className='bg-blue-500 text-white p-2.5 px-5 rounded-sm cursor-pointer mt-5'
             type='submit'
-            value='Save'
-          />
+          >
+            Save
+          </button>
         </form>
       </div>
 
@@ -73,12 +87,25 @@ function App() {
               <th className='py-3 px-4 border-b'>No</th>
               <th className='py-3 px-4 border-b'>Name</th>
               <th className='py-3 px-4 border-b'>Sector</th>
-              <th className='py-3 px-4 border-b'>term</th>
+              <th className='py-3 px-4 border-b'>Terms</th>
               <th className='py-3 px-4 border-b'>Action</th>
             </tr>
           </thead>
           <tbody>
-            <tr className='text-center'></tr>
+            {userData.map((data, index) => (
+              <tr className='text-center' key={index + 1}>
+                <td className='p-3'>{index + 1}</td>
+                <td className='p-3'>{data.name}</td>
+                <td className='p-3'>{data.sector}</td>
+                <td className='p-3'>{data.terms}</td>
+                <td className='flex justify-center p-3'>
+                  <button>
+                    {" "}
+                    <FaEdit size={20} />
+                  </button>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
