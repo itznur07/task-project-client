@@ -13,7 +13,7 @@ const App = () => {
 
   /** Sector Data Fetching Here */
   useEffect(() => {
-    fetch("http://localhost:3000/sectordata")
+    fetch("https://task-project-server.vercel.app/sectordata")
       .then((res) => res.json())
       .then((data) => setSectorData(data));
   }, []);
@@ -21,7 +21,7 @@ const App = () => {
 
   /** User Entered Data Fetching Here */
   useEffect(() => {
-    fetch("http://localhost:3000/userdata")
+    fetch("https://task-project-server.vercel.app/userdata")
       .then((res) => res.json())
       .then((data) => setUserData(data));
   }, []);
@@ -40,7 +40,7 @@ const App = () => {
     const terms = form.agree.value;
     const data = { name, sector, terms };
 
-    fetch("http://localhost:3000/userdata", {
+    fetch("https://task-project-server.vercel.app/userdata", {
       method: "POST",
       headers: {
         "content-type": "application/json",
@@ -58,7 +58,7 @@ const App = () => {
             confirmButtonText: "Ok",
           });
           form.reset();
-          fetch("http://localhost:3000/userdata")
+          fetch("https://task-project-server.vercel.app/userdata")
             .then((res) => res.json())
             .then((data) => setUserData(data));
         }
@@ -78,7 +78,7 @@ const App = () => {
       confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
-        fetch(`http://localhost:3000/userdata/${id}`, {
+        fetch(`https://task-project-server.vercel.app/userdata/${id}`, {
           method: "DELETE",
           headers: {
             "content-type": "application/json",
@@ -109,13 +109,16 @@ const App = () => {
     const terms = form.agree.value;
     const data = { name, sector, terms };
 
-    fetch(`http://localhost:3000/userdata/${editingData._id}`, {
-      method: "PUT", // Use PUT method for updating the data
-      headers: {
-        "content-type": "application/json",
-      },
-      body: JSON.stringify(data),
-    })
+    fetch(
+      `https://task-project-server.vercel.app/userdata/${editingData._id}`,
+      {
+        method: "PUT", // Use PUT method for updating the data
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify(data),
+      }
+    )
       .then((res) => res.json())
       .then((data) => {
         console.log(data);
@@ -128,7 +131,7 @@ const App = () => {
             confirmButtonText: "Ok",
           });
           setEditingData(null);
-          fetch("http://localhost:3000/userdata")
+          fetch("https://task-project-server.vercel.app/userdata")
             .then((res) => res.json())
             .then((data) => setUserData(data));
         }
