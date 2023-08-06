@@ -101,7 +101,6 @@ const App = () => {
   const handleEditData = (data) => {
     setEditingData(data);
   };
-
   const handleUpdateData = (e) => {
     e.preventDefault();
     const form = e.target;
@@ -151,12 +150,13 @@ const App = () => {
             required
           />
           <Select
+            name='sector'
             required
+            onChange={handleChange}
             options={sectorData.map(({ value, label }) => ({
               value: value,
               label: label,
             }))}
-            onChange={handleChange}
           />
           <input type='checkbox' name='agree' required className='my-2' />
           <br />
