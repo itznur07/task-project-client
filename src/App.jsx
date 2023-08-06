@@ -19,13 +19,13 @@ const App = () => {
   }, []);
   /** Sector Data Fetching Ends Here */
 
-  /** User Etered Data Fetching Here */
+  /** User Entered Data Fetching Here */
   useEffect(() => {
     fetch("http://localhost:3000/userdata")
       .then((res) => res.json())
       .then((data) => setUserData(data));
   }, []);
-  /** User Etered Data Fetching Ends Here */
+  /** User Entered Data Fetching Ends Here */
 
   const handleChange = (value) => {
     setSectors(value);
@@ -58,6 +58,9 @@ const App = () => {
             confirmButtonText: "Ok",
           });
           form.reset();
+          fetch("http://localhost:3000/userdata")
+            .then((res) => res.json())
+            .then((data) => setUserData(data));
         }
       });
   };
@@ -83,6 +86,8 @@ const App = () => {
         })
           .then((res) => res.json())
           .then((data) => {
+            const newData = userData.filter((data) => data._id !== id);
+            setUserData(newData);
             if (data.deletedCount > 0) {
               Swal.fire("Deleted!", "data has been deleted.", "success");
             }
@@ -123,7 +128,10 @@ const App = () => {
             timer: 2000,
             confirmButtonText: "Ok",
           });
-          setEditingData(null); // Clear the editing data state after successful update
+          setEditingData(null);
+          fetch("http://localhost:3000/userdata")
+            .then((res) => res.json())
+            .then((data) => setUserData(data));
         }
       });
   };
@@ -163,45 +171,49 @@ const App = () => {
       {/* Form Ends Here */}
 
       {/* Show Users Enterd Data Here */}
-      <div className='max-w-7xl md:mx-auto mt-20 mb-5 mx-5'>
-        <table className='min-w-full border border-gray-300'>
-          <thead>
-            <tr className='bg-blue-500 text-white font-bold text-lg'>
-              <th className='py-3 px-4 border-b md:block hidden'>No</th>
-              <th className='py-3 px-4 border-b'>Name</th>
-              <th className='py-3 px-4 border-b'>Sector</th>
-              <th className='py-3 px-4 border-b md:block hidden'>Terms</th>
-              <th className='py-3 px-4 border-b'>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {userData.map((data, index) => (
-              <tr className='text-center' key={index + 1}>
-                <td className='p-3 md:block hidden'>{index + 1}</td>
-                <td className='p-3'>{data.name}</td>
-                <td className='p-3'>{data.sector}</td>
-                <td className='p-3 md:block hidden'>{data.terms}</td>
-                <td className='p-3 space-x-4 text-[#201f1f] '>
-                  <button
-                    onClick={() => handleEditData(data)}
-                    className='hover:text-blue-500'
-                  >
-                    {" "}
-                    <FaEdit size={20} />
-                  </button>
-                  <button
-                    onClick={() => handleDeletedData(data._id)}
-                    className='hover:text-red-500'
-                  >
-                    {" "}
-                    <FaTrash size={20} />
-                  </button>
-                </td>
+      {userData.length > 0 ? (
+        <div className='max-w-7xl md:mx-auto mt-20 mb-5 mx-5'>
+          <table className='min-w-full border border-gray-300'>
+            <thead>
+              <tr className='bg-blue-500 text-white font-bold text-lg'>
+                <th className='py-3 px-4 border-b md:block hidden'>No</th>
+                <th className='py-3 px-4 border-b'>Name</th>
+                <th className='py-3 px-4 border-b'>Sector</th>
+                <th className='py-3 px-4 border-b md:block hidden'>Terms</th>
+                <th className='py-3 px-4 border-b'>Action</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody>
+              {userData.map((data, index) => (
+                <tr className='text-center' key={index + 1}>
+                  <td className='p-3 md:block hidden'>{index + 1}</td>
+                  <td className='p-3'>{data.name}</td>
+                  <td className='p-3'>{data.sector}</td>
+                  <td className='p-3 md:block hidden'>{data.terms}</td>
+                  <td className='p-3 space-x-4 text-[#201f1f] '>
+                    <button
+                      onClick={() => handleEditData(data)}
+                      className='hover:text-blue-500'
+                    >
+                      {" "}
+                      <FaEdit size={20} />
+                    </button>
+                    <button
+                      onClick={() => handleDeletedData(data._id)}
+                      className='hover:text-red-500'
+                    >
+                      {" "}
+                      <FaTrash size={20} />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        ""
+      )}
       {/* Show Users Enterd Data Ends Here */}
 
       {/* Modal for Editing Data */}
